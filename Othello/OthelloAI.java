@@ -1,3 +1,7 @@
+/* 
+    Daniel Liao, 2022
+*/
+
 public class OthelloAI {
 
     private Othello othello;

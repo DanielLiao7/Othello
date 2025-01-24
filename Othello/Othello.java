@@ -1,3 +1,7 @@
+/* 
+    Daniel Liao, 2022
+*/
+
 public class Othello {
 
     private int[][] board; //0 = empty; 1 = black; 2 = white

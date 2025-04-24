@@ -1,3 +1,9 @@
 # Default ignored files
 /shelf/
+/.idea/
 /workspace.xml
+/misc.xml
+/modules.xml
+/vcs.xml
+/out/
+/Othello.iml

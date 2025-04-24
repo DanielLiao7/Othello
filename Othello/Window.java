@@ -1,10 +1,7 @@
-/* 
-    Daniel Liao, 2022
-*/
-
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -18,6 +15,8 @@ public class Window implements ActionListener {
     private int width, height;
     private JFrame frame;
 
+    private JPanel contentPane;
+
     private JPanel gamePanel;
     private JPanel uiPanel;
     private JLabel currentTurn;
@@ -25,8 +24,8 @@ public class Window implements ActionListener {
     private JLabel whiteLabel;
     private JLabel winner;
     private JCheckBox validBox;
-    private Icon whitePiece;
-    private Icon blackPiece;
+    private ImageIcon whitePiece;
+    private ImageIcon blackPiece;
 
     private int tileSize = 60;
 
@@ -41,11 +40,11 @@ public class Window implements ActionListener {
         try {
             img = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\WhitePiece.png"));
             Image newimg = img.getScaledInstance( 50, 50,  Image.SCALE_SMOOTH ) ;
-            whitePiece = new ImageIcon( newimg );
+            whitePiece = new ImageIcon(newimg);
 
             img = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\BlackPiece.png"));
-            newimg = img.getScaledInstance( 50, 50,  Image.SCALE_SMOOTH  ) ;
-            blackPiece = new ImageIcon( newimg );
+            newimg = img.getScaledInstance( 50, 50,  Image.SCALE_SMOOTH ) ;
+            blackPiece = new ImageIcon(newimg);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,26 +57,39 @@ public class Window implements ActionListener {
         frame.setResizable(false);
         frame.setLayout(null);
         //frame.getContentPane().setBackground(new Color(0, 150, 250));
+        frame.setIconImage(whitePiece.getImage());
+
+        // Create content pane to house UI and game panels
+        contentPane = new JPanel();
+        // Ref: https://stackoverflow.com/questions/21167133/adding-vertical-spacing-to-north-component-in-borderlayout
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));  // Adds padding between edges of window and panels
+        contentPane.setLayout(new BorderLayout(5, 0));  // Adds padding between panels
+        frame.setContentPane(contentPane);
 
         //Setup Panels
-        gamePanel = new JPanel(null);
-        gamePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        gamePanel.setBounds(5,5, 490, 490);
+        gamePanel = new JPanel(new GridLayout(8, 8, 0, 0));
+        Border etchedBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+        Border padding = new EmptyBorder(5, 5, 5, 5);
+        Border compound = BorderFactory.createCompoundBorder(etchedBorder, padding);
+        gamePanel.setBorder(compound);
+        // gamePanel.setBounds(5,5, 490, 490);
         //gamePanel.setBackground(new Color(0, 150, 250));
-        frame.add(gamePanel);
+        contentPane.add(gamePanel, BorderLayout.CENTER);
 
         uiPanel = new JPanel(null);
         uiPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        uiPanel.setBounds(500, 5, 125, 490);
+        uiPanel.setPreferredSize(new Dimension(125, height));
+        // uiPanel.setBounds(500, 5, 125, 490);
         //uiPanel.setBackground(new Color(0, 150, 250));
-        frame.add(uiPanel);
+        //frame.add(uiPanel);
+        contentPane.add(uiPanel, BorderLayout.LINE_END);
 
         //Setup board
         for(int row = 0; row < othello.getBoard().length; row++){
             for(int col = 0; col < othello.getBoard()[0].length; col++){
-                gamePanel.add(new JButton());
-                JButton button = (JButton)gamePanel.getComponent((row * 8) + col);
-                button.setBounds((col * tileSize) + 5, (row * tileSize) + 5, tileSize, tileSize);
+                JButton button = new JButton();
+                // button.setBounds((col * tileSize) + 5, (row * tileSize) + 5, tileSize, tileSize);
+                button.setPreferredSize(new Dimension(tileSize, tileSize));
                 button.setContentAreaFilled(false);
                 button.setFocusPainted(false);
                 button.setBorder(BorderFactory.createEtchedBorder(0));
@@ -98,6 +110,7 @@ public class Window implements ActionListener {
                 }
                 button.setActionCommand(row + " " + col);
                 button.addActionListener(this);
+                gamePanel.add(button);
             }
         }
 
